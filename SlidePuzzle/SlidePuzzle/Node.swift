@@ -40,6 +40,7 @@ class Node {
         rightEdgeNodes = [4, 7, 10]
         solution = [1, 2, 3, 4, 5, 6, 7, 8, 9]
         hScore = manhattanDistance()
+        //hScore = simpleHeuristic()
         fScore = gScore + hScore
     }
     
@@ -62,54 +63,7 @@ class Node {
         return nodes
     }
     
-    // This HAS to be working
     // Generate all valid moves for the empty space as a list of integers (RETURNS SPACE NUMBER NOT INDEX)
-    // 1 2 3 4 5 6 7 8 9
-    /*
-     1 2 3
-     4 5 6
-     7 8 9
-     
-     [1, 2, 3, 5, 9, 6, 4, 7, 8]
-     Possible moves: [2, 8, 4, 6]
-     4
-     Child: [1, 9, 3, 5, 2, 6, 4, 7, 8]
-     Child: [1, 2, 3, 5, 7, 6, 4, 9, 8]
-     Child: [1, 2, 3, 9, 5, 6, 4, 7, 8]
-     Child: [1, 2, 3, 5, 6, 9, 4, 7, 8]
-     [1, 2, 3, 5, 7, 6, 4, 9, 8]
-     Possible moves: [5, 7, 9]
-     3
-     Child: [1, 2, 3, 5, 9, 6, 4, 7, 8]
-     Child: [1, 2, 3, 5, 7, 6, 9, 4, 8]
-     Child: [1, 2, 3, 5, 7, 6, 4, 8, 9]
-     [1, 2, 3, 5, 7, 6, 4, 8, 9]
-     Possible moves: [6, 8]
-     2
-     Child: [1, 2, 3, 5, 7, 9, 4, 8, 6]
-     Child: [1, 2, 3, 5, 7, 6, 4, 9, 8]
-     [1, 2, 3, 9, 5, 6, 4, 7, 8]
-     Possible moves: [1, 7, 5]
-     3
-     Child: [9, 2, 3, 1, 5, 6, 4, 7, 8]
-     Child: [1, 2, 3, 4, 5, 6, 9, 7, 8]
-     Child: [1, 2, 3, 5, 9, 6, 4, 7, 8]
-     [1, 2, 3, 4, 5, 6, 9, 7, 8]
-     Possible moves: [4, 8]
-     2
-     Child: [1, 2, 3, 9, 5, 6, 4, 7, 8]
-     Child: [1, 2, 3, 4, 5, 6, 7, 9, 8]
-     [1, 2, 3, 4, 5, 6, 7, 9, 8]
-     Possible moves: [5, 7, 9]
-     3
-     Child: [1, 2, 3, 4, 9, 6, 7, 5, 8]
-     Child: [1, 2, 3, 4, 5, 6, 9, 7, 8]
-     Child: [1, 2, 3, 4, 5, 6, 7, 8, 9]
-     [1, 2, 3, 4, 5, 6, 7, 8, 9]
-     Solution found!
-     [0, 8, 9, 4, 7, 8, 9]
-     
-     */
     func generatePossibleMoves() -> [Int] {
         var list: [Int] = []
         // Get the location (spot) of 9
@@ -134,25 +88,8 @@ class Node {
         if right < 10 && !rightEdgeNodes.contains(right) {
             list.append(right)
         }
-        print("Possible moves: \(list)")
+        //print("Possible moves: \(list)")
         return list
-        /*
-         [1, 2, 3, 5, 9, 6, 4, 7, 8]
-         [2, 8, 4, 6]
-         [1, 2, 3, 5, 7, 6, 4, 9, 8]
-         [5, 7, 9]
-         [1, 2, 3, 5, 7, 6, 4, 8, 9]
-         [6, 8]
-         [1, 2, 3, 9, 5, 6, 4, 7, 8]
-         [1, 7, 5]
-         [1, 2, 3, 4, 5, 6, 9, 7, 8]
-         [4, 8]
-         [1, 2, 3, 4, 5, 6, 7, 9, 8]
-         [5, 7, 9]
-         [1, 2, 3, 4, 5, 6, 7, 8, 9]
-         Solution found!
-         [0, 8, 9, 4, 7, 8, 9]
-         */
     }
     
     // Check if the current node is the solution (all nodes are in place)
@@ -169,5 +106,16 @@ class Node {
             mhd += abs(temp - actualLocation)
         }
         return mhd
+    }
+    
+    func simpleHeuristic() -> Int {
+        var outOfPlace: Int = 0
+        for i in 0...solution.count - 1 {
+            // If out of place
+            if solution[i] != i + 1 {
+                outOfPlace += 1
+            }
+        }
+        return outOfPlace
     }
 }

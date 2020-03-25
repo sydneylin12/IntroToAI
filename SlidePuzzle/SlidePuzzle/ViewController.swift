@@ -12,6 +12,7 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var gameView: UIView!
     @IBOutlet weak var timerLabel: UILabel!
+    @IBOutlet weak var movesLabel: UILabel!
     @IBOutlet weak var randomizeButton: UIButton!
     @IBOutlet weak var solveButton: UIButton!
     
@@ -26,6 +27,7 @@ class ViewController: UIViewController {
     var tileSize: CGFloat  = 0
     
     var time: Int = 0
+    var moves: Int = 0
     var timer: Timer = Timer()
     
     // Empty space location
@@ -39,37 +41,48 @@ class ViewController: UIViewController {
         generateTiles()
     }
 
+    // When the randomize buttion is tapped
     @IBAction func randomizePressed(_ sender: Any) {
-        //randomize()
-        easyRandomize()
-        time = 0
-        timerLabel.text = String(time)
-        timer.invalidate()
-        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(action), userInfo: nil, repeats: true)
+        easyRandomize(iterations: 30)
     }
     
     @IBAction func solve(_ sender: Any) {
+        // Create a puzzle class with current state of the boardd
+        startTimer()
         let puzzle: Puzzle = Puzzle(state: toState())
-        var moveList: [Int]? = puzzle.expand()
+        var moveList: [Int]? = puzzle.AStar()
         
         if moveList == nil {
-            print("A* search failed!")
+            print("Could not solve with A* algorithm!")
             return
         }
-        // Else
+        
+        // Create a timer for animation scheduling
         let _ = Timer.scheduledTimer(withTimeInterval: 0.2, repeats: true, block: { t in
             if moveList!.count > 0 {
                 let move: Int = moveList![0]
                 moveList!.remove(at: 0)
                 if move > 0 {
+                    self.moves += 1
+                    self.movesLabel.text = String(self.moves)
                     self.swap(numberToSwap: move)
                     self.updateTileColor()
-                    //[0, 5, 8, 9, 1, 4, 7, 8, 9]
                 }
+            }
+            else { // Stop the timer when last move is made
+                t.invalidate() // Stop the local timer too
+                self.timer.invalidate()
+                
+                let alert = UIAlertController(title: "AI Solved the puzzle!", message: "Solved in \(self.time) seconds and \(self.moves) moves.", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: {
+                    _ in self.resetGameLabels()
+                }))
+                self.present(alert, animated: true)
             }
         })
     }
     
+    // Timer selector action to increment time
     @objc func action() {
         time += 1
         timerLabel.text = String(time)
@@ -81,19 +94,16 @@ class ViewController: UIViewController {
         solveButton.layer.cornerRadius = 5.0
         timerLabel.layer.cornerRadius = 5.0
         timerLabel.layer.masksToBounds = true
+        movesLabel.layer.cornerRadius = 5.0
+        movesLabel.layer.masksToBounds = true
     }
     
     // Print the state of the board as an array
     func toState() -> [Int] {
         var ret: [Int] = []
         var copy = tileArr
-        copy.sort {
-            $0.currentPosition < $1.currentPosition
-        }
-        
-        for i in 0...copy.count - 1 {
-            ret.append(copy[i].data)
-        }
+        copy.sort { $0.currentPosition < $1.currentPosition }
+        for i in 0...copy.count - 1 { ret.append(copy[i].data) }
         return ret
     }
     
@@ -157,10 +167,11 @@ class ViewController: UIViewController {
         lastBlock.backgroundColor = UIColor.clear
         empty = lastBlock
         
+        // Update the tile color if they are in place
         updateTileColor()
     }
     
-    // Randomize tile placement on the grid
+    // Randomize tile placement on the grid (HARD)
     func randomize() {
         // Clone the array for the randomization
         var duplicateCenters: [TileCenter] = centersArr
@@ -180,17 +191,36 @@ class ViewController: UIViewController {
     }
     
     // TODO do not use dispatch queue
-    func easyRandomize() {
-        for i in 0...10 {
-            let multiplier = 0.2 * Double(i)
-            DispatchQueue.main.asyncAfter(deadline: .now() + multiplier, execute: {
-                let moves = self.generateMoveList()
-                let rand = Int.random(in: 0...moves.count - 1)
-                let idx = moves[rand]
-                self.swap(numberToSwap: idx)
-                self.updateTileColor()
-            })
-        }
+    func easyRandomize(iterations: Int) {
+        var currIter: Int = 1
+        var previous = -1
+        let _ = Timer.scheduledTimer(withTimeInterval: 0.2, repeats: true, block: { t in
+            
+            // Break if the amount of loops has been hit
+            if currIter == iterations {
+                t.invalidate()
+                self.resetGameLabels()
+                return
+            }
+            
+            var moves = self.generateMoveList()
+            var rand = Int.random(in: 0...moves.count - 1)
+            var move = moves[rand]
+            print(moves)
+            print("Previous: \(previous), current move: \(move)")
+            // Try to eliminate duplicate moves
+            if moves.contains(previous) && moves.count > 1 {
+                print("Duplicate!")
+                moves.remove(at: moves.firstIndex(of: previous)!)
+                rand = Int.random(in: 0...moves.count - 1)
+                move = moves[rand]
+            }
+            
+            self.swap(numberToSwap: move)
+            self.updateTileColor()
+            previous = self.toState().firstIndex(of: move)! + 1
+            currIter += 1
+        })
     }
     
     // Check if any of the tiles are in starting position
@@ -223,9 +253,7 @@ class ViewController: UIViewController {
             if touchView.isEmptyTile(length: numTiles) {
                 return // Cannot touch empty tile
             }
-            
-            //print("Touched: \(touchView.data) at position: \(touchView.currentPosition)")
-            
+                        
             // Compute distance formula
             let xDif: CGFloat = touchView.center.x - empty.center.x
             let yDif: CGFloat = touchView.center.y - empty.center.y
@@ -243,6 +271,11 @@ class ViewController: UIViewController {
                     touchView.backgroundColor = UIColor.darkGray
                 }
             }
+            
+            // Increment the number of moves
+            self.moves += 1
+            self.movesLabel.text = String(self.moves)
+            startTimer()
         }
     }
     
@@ -299,6 +332,20 @@ class ViewController: UIViewController {
         }
         //print(list)
         return list
+    }
+    
+    func resetGameLabels() {
+        time = 0
+        moves = 0
+        movesLabel.text = String(moves)
+        timerLabel.text = String(time)
+        timer.invalidate()
+    }
+    
+    func startTimer() {
+        if !timer.isValid {
+            timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(action), userInfo: nil, repeats: true)
+        }
     }
 }
 

@@ -49,83 +49,59 @@ class Puzzle {
         openStates.append(node.state)
     }
     
-    // Make a move based on lowest f-score
-    func expand() -> [Int]? {
+    // Run the A* algorithm and return the optimal list of moves, or NIL if no solution can be found
+    func AStar() -> [Int]? {
         // Make sure the list has nodes in it
-        var moveList: [Int] = []
         while open.count > 0 {
-            open.sort {
-                $0.fScore < $1.fScore
-            }
+            // Sort open list based on lowest f-score
+            open.sort { $0.fScore < $1.fScore }
             turns += 1
             
             // "Dequeue" the node at the start
             let dequeued: Node = open[0]
-            print(dequeued.state)
+            print("Current state: \(dequeued.state)")
             currentNode = dequeued
             open.remove(at: 0) // Remove from open list
             openStates.remove(at: 0)
             
             if dequeued.isSolution() {
-                print("Solution found!")
-                
-                var arr: [[Int]] = []
-                
-                var curr = dequeued
-                while curr.parent != nil {
-                    //print(curr.state)
-                    arr.append(curr.state)
-                    curr = curr.parent!
-                }
-                arr.append(curr.state)
-                
-                arr.reverse()
-                
-                var i = 1
-                for step in arr {
-                    print("Step \(i): \(step)")
-                    i += 1
-                }
-                
-                var arr2: [Int] = []
-                for i in 0...arr.count - 2 {
-                    arr2.append(getMove(current: arr[i], next: arr[i+1]))
-                }
-                
-                print(arr2)
-                
-                return arr2
+                print("Solution found with number of turns: \(turns)")
+                return generateSolution()
             }
                         
             // Iterate through the children
             let children: [Node] = dequeued.generateChildren()
-            print(children.count)
+            //print("Children total: \(children.count)")
             for child in children {
-                print("Child: \(child.state)")
+                //print("Child: \(child.state)")
                 let idxOpen = openStates.firstIndex(of: child.state)
                 let idxClosed = closedStates.firstIndex(of: child.state)
 
+                // If the open list contains the child and the existing f-score is less
                 if idxOpen != nil && open[idxOpen!].fScore < child.fScore {
-                    continue
+                    continue // Discard the node
                 }
+                // If the closed list contains the child and the existing f-score is less
                 if idxClosed != nil && closed[idxClosed!].fScore < child.fScore {
-                    continue
+                    continue // Discard the node
                 }
                 
+                // Add the child to the open list
                 open.append(child)
                 openStates.append(child.state)
             }
-            
+            // Add the expanded node to the closed list
             closed.append(dequeued)
             closedStates.append(dequeued.state)
         }
-            
+        
+        // After the while loop ends
         if !currentNode.isSolution() {
-            print("A star failed - end of loop!")
+            print("A star failed - no more nodes in the open list!")
             return nil
         }
         else {
-            return nil
+            return generateSolution()
         }
     }
     
@@ -144,22 +120,40 @@ class Puzzle {
         return -1
     }
     
-    // Helper method for backtracking
-    func isLegal(move: [Int]) -> Bool {
-        // If the moves are the same
-        //print("Currrent move: \(move)")
-        if currentNode.state.elementsEqual(move) {
-            return true
+    // Generate the list of moves required to get initial state to goal state
+    func generateSolution() -> [Int] {
+        // Array of states
+        var statesToSolution: [[Int]] = []
+        
+        // Clone to not mess up pointer
+        var curr = currentNode
+        
+        // Backtrack over the parent path to find the move set
+        while curr.parent != nil {
+            statesToSolution.append(curr.state)
+            curr = curr.parent!
         }
-        let children = currentNode.generateChildren()
-        for child in children {
-            //print("Children move: \(child.state)")
-            // Check if a child can make the optimal move
-            if child.state.elementsEqual(move) {
-                return true
-            }
+        statesToSolution.append(curr.state)
+        // Reverse with the top-most node as the starting instead of the bottom-most
+        statesToSolution.reverse()
+
+        // Generate required moves to get from initial state to goal state with helper function
+        var movesToSolution: [Int] = []
+        
+        // Error check for one move solution
+        if statesToSolution.count <= 1 {
+            return [0]
         }
-        print("Illegal")
-        return false // Move is illegal, must backtrack
+        
+        // Error check for solution set with 2 moves
+        if statesToSolution.count == 2 {
+            return [getMove(current: statesToSolution[0], next: statesToSolution[1])]
+        }
+        
+        for i in 0...statesToSolution.count - 2 {
+            movesToSolution.append(getMove(current: statesToSolution[i], next: statesToSolution[i+1]))
+        }
+        print("Move set to solution: \(movesToSolution) with length: \(movesToSolution.count)")
+        return movesToSolution
     }
 }
