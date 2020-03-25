@@ -37,11 +37,11 @@ class ViewController: UIViewController {
         overrideUserInterfaceStyle = .light
         initUserInterface()
         generateTiles()
-        randomizePressed(Any.self)
     }
 
     @IBAction func randomizePressed(_ sender: Any) {
-        randomize()
+        //randomize()
+        easyRandomize()
         time = 0
         timerLabel.text = String(time)
         timer.invalidate()
@@ -49,7 +49,25 @@ class ViewController: UIViewController {
     }
     
     @IBAction func solve(_ sender: Any) {
-        printBoardState()
+        let puzzle: Puzzle = Puzzle(state: toState())
+        var moveList: [Int]? = puzzle.expand()
+        
+        if moveList == nil {
+            print("A* search failed!")
+            return
+        }
+        // Else
+        let _ = Timer.scheduledTimer(withTimeInterval: 0.2, repeats: true, block: { t in
+            if moveList!.count > 0 {
+                let move: Int = moveList![0]
+                moveList!.remove(at: 0)
+                if move > 0 {
+                    self.swap(numberToSwap: move)
+                    self.updateTileColor()
+                    //[0, 5, 8, 9, 1, 4, 7, 8, 9]
+                }
+            }
+        })
     }
     
     @objc func action() {
@@ -66,31 +84,17 @@ class ViewController: UIViewController {
     }
     
     // Print the state of the board as an array
-    func printBoardState() {
+    func toState() -> [Int] {
+        var ret: [Int] = []
         var copy = tileArr
         copy.sort {
             $0.currentPosition < $1.currentPosition
         }
         
-        print("[", terminator: "")
         for i in 0...copy.count - 1 {
-            let tile = copy[i]
-            var num: String = String(tile.data)
-            if tile.data == numTiles {
-                num = "_"
-            }
-            
-            if i == copy.count - 1 {
-                print(num, terminator: "")
-            }
-            else {
-                print(num, terminator: ", ")
-            }
+            ret.append(copy[i].data)
         }
-        print("]", terminator: "")
-        print("")
-        
-        generateMoveList()
+        return ret
     }
     
     // Create tiles on the grid
@@ -152,6 +156,8 @@ class ViewController: UIViewController {
         lastBlock.text = nil
         lastBlock.backgroundColor = UIColor.clear
         empty = lastBlock
+        
+        updateTileColor()
     }
     
     // Randomize tile placement on the grid
@@ -170,8 +176,25 @@ class ViewController: UIViewController {
             tile.currentPosition = randomTile.location
             duplicateCenters.remove(at: idx)
         }
-        
-        // Check if any of the tiles are in starting position
+        updateTileColor()
+    }
+    
+    // TODO do not use dispatch queue
+    func easyRandomize() {
+        for i in 0...10 {
+            let multiplier = 0.2 * Double(i)
+            DispatchQueue.main.asyncAfter(deadline: .now() + multiplier, execute: {
+                let moves = self.generateMoveList()
+                let rand = Int.random(in: 0...moves.count - 1)
+                let idx = moves[rand]
+                self.swap(numberToSwap: idx)
+                self.updateTileColor()
+            })
+        }
+    }
+    
+    // Check if any of the tiles are in starting position
+    func updateTileColor() {
         for tile in tileArr {
             if tile.isInPosition() && !tile.isEmptyTile(length: 9) {
                 tile.backgroundColor = UIColor.systemGreen
@@ -201,7 +224,7 @@ class ViewController: UIViewController {
                 return // Cannot touch empty tile
             }
             
-            print("Touched: \(touchView.data) at position: \(touchView.currentPosition)")
+            //print("Touched: \(touchView.data) at position: \(touchView.currentPosition)")
             
             // Compute distance formula
             let xDif: CGFloat = touchView.center.x - empty.center.x
@@ -210,7 +233,7 @@ class ViewController: UIViewController {
 
             // Must use this conditional because of decimal error in size 3 board
             if (distance - tileSize < 0.1) {
-                swap(idx: touchView.currentPosition)
+                swap(numberToSwap: touchView.currentPosition)
                 
                 // Highlight green when in the right spot
                 if touchView.isInPosition() {
@@ -224,8 +247,10 @@ class ViewController: UIViewController {
     }
     
     // Swap two tiles - pass in POSITIONS (swaps with empty box)
-    func swap(idx: Int) {
-        let first: MyLabel = getAtPosition(position: idx)
+    // PASS IN THE TARGET POSITION NOT EMPTY
+    func swap(numberToSwap: Int) {
+        
+        let first: MyLabel = getAtPosition(position: numberToSwap)
         let second: MyLabel = getAtPosition(position: empty.currentPosition)
         
         // Swap the centers and the current positions
@@ -255,23 +280,24 @@ class ViewController: UIViewController {
     // Generate all valid moves for the empty space
     func generateMoveList() -> [Int] {
         var list: [Int] = []
-        let up = empty.currentPosition - 3
+        let idx = empty.currentPosition
+        let up = idx - 3
         if up > 0 {
             list.append(up)
         }
-        let down = empty.currentPosition + 3
+        let down = idx + 3
         if down < 10 {
             list.append(down)
         }
-        let left = empty.currentPosition - 1
-        if left > 0 {
+        let left = idx - 1
+        if left > 0 && idx != 1 && idx != 4 && idx != 7 {
             list.append(left)
         }
         let right = empty.currentPosition + 1
-        if right < 10 {
+        if right < 10 && idx != 3 && idx != 6 && idx != 9 {
             list.append(right)
         }
-        print(list)
+        //print(list)
         return list
     }
 }

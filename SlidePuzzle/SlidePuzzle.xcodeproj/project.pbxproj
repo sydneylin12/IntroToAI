@@ -15,6 +15,8 @@
 		002BC3962429B737004E3EF8 /* MyLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 002BC3952429B737004E3EF8 /* MyLabel.swift */; };
 		002BC398242A7B0A004E3EF8 /* TileCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 002BC397242A7B0A004E3EF8 /* TileCenter.swift */; };
 		002BC39B242A7D4A004E3EF8 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 002BC385242964DA004E3EF8 /* ViewController.swift */; };
+		002BC39D242ABA01004E3EF8 /* Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = 002BC39C242ABA01004E3EF8 /* Node.swift */; };
+		002BC39F242AC4D2004E3EF8 /* Puzzle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 002BC39E242AC4D2004E3EF8 /* Puzzle.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +30,8 @@
 		002BC38F242964DE004E3EF8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		002BC3952429B737004E3EF8 /* MyLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyLabel.swift; sourceTree = SOURCE_ROOT; };
 		002BC397242A7B0A004E3EF8 /* TileCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileCenter.swift; sourceTree = "<group>"; };
+		002BC39C242ABA01004E3EF8 /* Node.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Node.swift; sourceTree = "<group>"; };
+		002BC39E242AC4D2004E3EF8 /* Puzzle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Puzzle.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,7 +64,6 @@
 		002BC380242964D9004E3EF8 /* SlidePuzzle */ = {
 			isa = PBXGroup;
 			children = (
-				002BC397242A7B0A004E3EF8 /* TileCenter.swift */,
 				002BC381242964DA004E3EF8 /* AppDelegate.swift */,
 				002BC383242964DA004E3EF8 /* SceneDelegate.swift */,
 				002BC385242964DA004E3EF8 /* ViewController.swift */,
@@ -69,6 +72,9 @@
 				002BC38C242964DE004E3EF8 /* LaunchScreen.storyboard */,
 				002BC38F242964DE004E3EF8 /* Info.plist */,
 				002BC3952429B737004E3EF8 /* MyLabel.swift */,
+				002BC397242A7B0A004E3EF8 /* TileCenter.swift */,
+				002BC39C242ABA01004E3EF8 /* Node.swift */,
+				002BC39E242AC4D2004E3EF8 /* Puzzle.swift */,
 			);
 			path = SlidePuzzle;
 			sourceTree = "<group>";
@@ -145,8 +151,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				002BC39B242A7D4A004E3EF8 /* ViewController.swift in Sources */,
+				002BC39F242AC4D2004E3EF8 /* Puzzle.swift in Sources */,
 				002BC382242964DA004E3EF8 /* AppDelegate.swift in Sources */,
 				002BC398242A7B0A004E3EF8 /* TileCenter.swift in Sources */,
+				002BC39D242ABA01004E3EF8 /* Node.swift in Sources */,
 				002BC3962429B737004E3EF8 /* MyLabel.swift in Sources */,
 				002BC384242964DA004E3EF8 /* SceneDelegate.swift in Sources */,
 			);
