@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16086"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -10,7 +10,7 @@
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="SlidePuzzle" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="AI_Slider" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -78,6 +78,19 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="5kx-E7-oxW">
+                                <rect key="frame" x="188.5" y="678" width="37" height="37"/>
+                                <color key="color" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </activityIndicatorView>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="JY6-s5-bwR">
+                                <rect key="frame" x="69.5" y="94" width="275" height="32"/>
+                                <segments>
+                                    <segment title="Easy"/>
+                                    <segment title="Medium"/>
+                                    <segment title="Hard"/>
+                                    <segment title="Master"/>
+                                </segments>
+                            </segmentedControl>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
@@ -85,6 +98,7 @@
                             <constraint firstItem="4N3-Gv-3j4" firstAttribute="trailing" secondItem="c4x-Ss-gMr" secondAttribute="trailing" id="7gZ-Gv-gCQ"/>
                             <constraint firstItem="UC9-mZ-s0T" firstAttribute="width" secondItem="c4x-Ss-gMr" secondAttribute="width" multiplier="0.4" id="9k2-RP-9cw"/>
                             <constraint firstItem="Bb9-YN-CdM" firstAttribute="top" secondItem="rTG-Jm-Sab" secondAttribute="bottom" id="DB9-kQ-Ggp"/>
+                            <constraint firstItem="JY6-s5-bwR" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="Dsa-ON-jt6"/>
                             <constraint firstItem="rTG-Jm-Sab" firstAttribute="centerX" secondItem="Bb9-YN-CdM" secondAttribute="centerX" id="Jfp-X8-dou"/>
                             <constraint firstItem="Bb9-YN-CdM" firstAttribute="centerY" secondItem="zyD-dc-dGE" secondAttribute="centerY" id="LSb-j8-JxB"/>
                             <constraint firstItem="UC9-mZ-s0T" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" constant="-25" id="LvW-rj-sxq"/>
@@ -97,7 +111,10 @@
                             <constraint firstItem="4N3-Gv-3j4" firstAttribute="leading" relation="lessThanOrEqual" secondItem="UC9-mZ-s0T" secondAttribute="trailing" constant="70" id="VLc-BT-fkp"/>
                             <constraint firstItem="Bb9-YN-CdM" firstAttribute="width" secondItem="zyD-dc-dGE" secondAttribute="width" id="Vpv-bq-Qpb"/>
                             <constraint firstItem="zyD-dc-dGE" firstAttribute="leading" secondItem="c4x-Ss-gMr" secondAttribute="leading" id="ar5-3h-AG6"/>
+                            <constraint firstItem="JY6-s5-bwR" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="50" id="e8G-MF-Rc2"/>
                             <constraint firstItem="UC9-mZ-s0T" firstAttribute="centerY" secondItem="4N3-Gv-3j4" secondAttribute="centerY" id="f2l-c8-nzb"/>
+                            <constraint firstItem="5kx-E7-oxW" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="h8v-2C-Ir6"/>
+                            <constraint firstItem="5kx-E7-oxW" firstAttribute="top" secondItem="c4x-Ss-gMr" secondAttribute="bottom" constant="50" id="l6W-am-9pr"/>
                             <constraint firstItem="c4x-Ss-gMr" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="pFR-dd-LiG"/>
                             <constraint firstItem="zyD-dc-dGE" firstAttribute="top" secondItem="52T-Ol-E9w" secondAttribute="bottom" id="rV9-CB-fEn"/>
                             <constraint firstItem="UC9-mZ-s0T" firstAttribute="leading" secondItem="c4x-Ss-gMr" secondAttribute="leading" id="tfk-lz-ifb"/>
@@ -105,6 +122,8 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
+                        <outlet property="activityIndicator" destination="5kx-E7-oxW" id="Bf9-rY-815"/>
+                        <outlet property="difficultyControl" destination="JY6-s5-bwR" id="7QI-aF-Vkf"/>
                         <outlet property="gameView" destination="c4x-Ss-gMr" id="nYZ-rQ-Jdt"/>
                         <outlet property="movesLabel" destination="Bb9-YN-CdM" id="4ky-RU-4x1"/>
                         <outlet property="randomizeButton" destination="UC9-mZ-s0T" id="SKX-X3-7ip"/>

@@ -307,7 +307,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = sydneylin.AISlider;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sydneylin.aislider;
 				PRODUCT_NAME = "AI Slider";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -325,7 +325,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = sydneylin.AISlider;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sydneylin.aislider;
 				PRODUCT_NAME = "AI Slider";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;

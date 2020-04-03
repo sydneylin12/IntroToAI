@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:SlidePuzzle.xcodeproj">
+      location = "group:../../AI Slider Icons 2/ios">
+   </FileRef>
+   <FileRef
+      location = "self:">
    </FileRef>
 </Workspace>

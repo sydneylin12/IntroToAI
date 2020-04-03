@@ -15,6 +15,8 @@ class ViewController: UIViewController {
     @IBOutlet weak var movesLabel: UILabel!
     @IBOutlet weak var randomizeButton: UIButton!
     @IBOutlet weak var solveButton: UIButton!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var difficultyControl: UISegmentedControl!
     
     // Array of tile/label objects
     var tileArr: [MyLabel] = []
@@ -41,44 +43,67 @@ class ViewController: UIViewController {
         generateTiles()
     }
 
-    // When the randomize buttion is tapped
+    // When the randomize buttion is tapped, shuffle with difficulty selected from index
     @IBAction func randomizePressed(_ sender: Any) {
-        easyRandomize(iterations: 30)
+        var iter: Int = 0
+        switch difficultyControl.selectedSegmentIndex {
+        case 0:
+            iter = 25
+        case 1:
+            iter = 50
+        case 2:
+            iter = 100
+        case 3:
+            iter = 500
+        default:
+            iter = 25
+        }
+        
+        easyRandomize(iterations: iter)
     }
     
     @IBAction func solve(_ sender: Any) {
         // Create a puzzle class with current state of the boardd
         startTimer()
-        let puzzle: Puzzle = Puzzle(state: toState())
-        var moveList: [Int]? = puzzle.AStar()
+        activityIndicator.color = UIColor.systemBlue
+        activityIndicator.startAnimating()
         
-        if moveList == nil {
-            print("Could not solve with A* algorithm!")
-            return
-        }
-        
-        // Create a timer for animation scheduling
-        let _ = Timer.scheduledTimer(withTimeInterval: 0.2, repeats: true, block: { t in
-            if moveList!.count > 0 {
-                let move: Int = moveList![0]
-                moveList!.remove(at: 0)
-                if move > 0 {
-                    self.moves += 1
-                    self.movesLabel.text = String(self.moves)
-                    self.swap(numberToSwap: move)
-                    self.updateTileColor()
+        // Start the animation BEFORE doing the A*
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+            
+            let puzzle: Puzzle = Puzzle(state: self.toState())
+            var moveList: [Int]? = puzzle.AStar()
+            
+            if moveList == nil {
+                print("Could not solve with A* algorithm!")
+                return
+            }
+            
+            // Create a timer for animation scheduling
+            let _ = Timer.scheduledTimer(withTimeInterval: 0.2, repeats: true, block: { t in
+                if moveList!.count > 0 {
+                    let move: Int = moveList![0]
+                    moveList!.remove(at: 0)
+                    if move > 0 {
+                        self.moves += 1
+                        self.movesLabel.text = String(self.moves)
+                        self.swap(numberToSwap: move)
+                        self.updateTileColor()
+                    }
                 }
-            }
-            else { // Stop the timer when last move is made
-                t.invalidate() // Stop the local timer too
-                self.timer.invalidate()
-                
-                let alert = UIAlertController(title: "AI Solved the puzzle!", message: "Solved in \(self.time) seconds and \(self.moves) moves.", preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: {
-                    _ in self.resetGameLabels()
-                }))
-                self.present(alert, animated: true)
-            }
+                else { // Stop the timer when last move is made
+                    t.invalidate() // Stop the local timer too
+                    self.timer.invalidate()
+                    
+                    let alert = UIAlertController(title: "AI Solved the puzzle!", message: "Solved in \(self.time) seconds and \(self.moves) moves.", preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: {
+                        _ in self.resetGameLabels()
+                    }))
+                    
+                    self.activityIndicator.stopAnimating()
+                    self.present(alert, animated: true)
+                }
+            })
         })
     }
     
@@ -107,7 +132,7 @@ class ViewController: UIViewController {
         return ret
     }
     
-    // Create tiles on the grid
+    // Create tiles on the grid by making labels
     func generateTiles() {
         // Reset the game
         tileArr = []
@@ -190,35 +215,37 @@ class ViewController: UIViewController {
         updateTileColor()
     }
     
-    // TODO do not use dispatch queue
+    // Randomize with individual moves
     func easyRandomize(iterations: Int) {
+        
+        // Start the indicator when beginning to animate
+        activityIndicator.color = UIColor.systemRed
+        activityIndicator.startAnimating()
         var currIter: Int = 1
-        var previous = -1
-        let _ = Timer.scheduledTimer(withTimeInterval: 0.2, repeats: true, block: { t in
+        
+        // Keep track of the last 2 moves made
+        var previous: [Int] = [-1, -1]
+        let _ = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { t in
             
             // Break if the amount of loops has been hit
             if currIter == iterations {
                 t.invalidate()
                 self.resetGameLabels()
+                self.activityIndicator.stopAnimating()
                 return
             }
             
             var moves = self.generateMoveList()
-            var rand = Int.random(in: 0...moves.count - 1)
-            var move = moves[rand]
-            print(moves)
-            print("Previous: \(previous), current move: \(move)")
-            // Try to eliminate duplicate moves
-            if moves.contains(previous) && moves.count > 1 {
-                print("Duplicate!")
-                moves.remove(at: moves.firstIndex(of: previous)!)
-                rand = Int.random(in: 0...moves.count - 1)
-                move = moves[rand]
-            }
+            
+            // Remove any occurances of the last 2 moves
+            moves.removeAll(where: { previous.contains($0) })
+            let rand = Int.random(in: 0...moves.count - 1)
+            let move = moves[rand]
+            previous.append(move)
+            previous.remove(at: 0)
             
             self.swap(numberToSwap: move)
             self.updateTileColor()
-            previous = self.toState().firstIndex(of: move)! + 1
             currIter += 1
         })
     }
