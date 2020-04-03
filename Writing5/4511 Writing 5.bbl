@@ -1,0 +1,22 @@
+\begin{thebibliography}{1}
+
+\bibitem{nosrati2012investigation}
+Masoud Nosrati, Ronak Karimi, and Hojat~Allah Hasanvand.
+\newblock Investigation of the*(star) search algorithms: Characteristics,
+  methods and approaches.
+\newblock {\em World Applied Programming}, 2(4):251--256, 2012.
+
+\bibitem{piltaver2012pathology}
+Rok Piltaver, Mitja Lu{\v{s}}trek, and Matja{\v{z}} Gams.
+\newblock The pathology of heuristic search in the 8-puzzle.
+\newblock {\em Journal of Experimental \& Theoretical Artificial Intelligence},
+  24(1):65--94, 2012.
+
+\bibitem{reinefeld1993complete}
+Alexander Reinefeld.
+\newblock Complete solution of the eight-puzzle and the bene t of node ordering
+  in ida*.
+\newblock In {\em International Joint Conference on Artificial Intelligence},
+  pages 248--253, 1993.
+
+\end{thebibliography}
