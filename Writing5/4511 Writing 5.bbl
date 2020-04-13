@@ -1,5 +1,21 @@
 \begin{thebibliography}{1}
 
+\bibitem{bhasin2012genetic}
+Harsh Bhasin and Neha Singla.
+\newblock Genetic based algorithm for n-puzzle problem.
+\newblock {\em International Journal of Computer Applications}, 51(22), 2012.
+
+\bibitem{burns2012implementing}
+Ethan~Andrew Burns, Matthew Hatem, Michael~J Leighton, and Wheeler Ruml.
+\newblock Implementing fast heuristic search code.
+\newblock In {\em Fifth Annual Symposium on Combinatorial Search}, 2012.
+
+\bibitem{kunkle2001solving}
+Daniel~R Kunkle.
+\newblock Solving the 8 puzzle in a minimum number of moves: An application of
+  the a* algorithm.
+\newblock {\em Introduction to Artificial Intelligence}, 2001.
+
 \bibitem{nosrati2012investigation}
 Masoud Nosrati, Ronak Karimi, and Hojat~Allah Hasanvand.
 \newblock Investigation of the*(star) search algorithms: Characteristics,
@@ -12,11 +28,21 @@ Rok Piltaver, Mitja Lu{\v{s}}trek, and Matja{\v{z}} Gams.
 \newblock {\em Journal of Experimental \& Theoretical Artificial Intelligence},
   24(1):65--94, 2012.
 
+\bibitem{ratner1990n2}
+Daniel Ratner and Manfred Warmuth.
+\newblock The (n2- 1)-puzzle and related relocation problems.
+\newblock {\em Journal of Symbolic Computation}, 10(2):111--137, 1990.
+
 \bibitem{reinefeld1993complete}
 Alexander Reinefeld.
 \newblock Complete solution of the eight-puzzle and the bene t of node ordering
   in ida*.
 \newblock In {\em International Joint Conference on Artificial Intelligence},
   pages 248--253, 1993.
+
+\bibitem{russell2002artificial}
+Stuart Russell and Peter Norvig.
+\newblock Artificial intelligence: a modern approach.
+\newblock 2002.
 
 \end{thebibliography}
